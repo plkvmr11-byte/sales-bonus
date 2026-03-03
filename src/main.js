@@ -137,9 +137,11 @@ const sellerStats = data.sellers.map(seller => {
 
   // Формирую список самых продаваемых товаров (до 10 штук)
   const topProducts = Object.entries(productQuantityMap)
-    .map(([sku, quantity]) => ({ sku, quantity }))
-    .sort((a, b) => b.quantity - a.quantity)
-    .slice(0, 10);
+  .map(([sku, quantity]) => ({ sku, quantity }))
+  .sort((a, b) => b.quantity - a.quantity)
+  .slice(0, 10);
+
+seller.top_products = topProducts; // присваиваем правильный топ
 
   // Возвращаю готовую статистику по продавцу
   return {
@@ -148,9 +150,9 @@ const sellerStats = data.sellers.map(seller => {
   last_name: seller.last_name,    
   revenue: totalRevenue,
   profit: totalProfit,
-  sales_count: sellerReceipts.length,
+  sales_count: sellerReceipts.length, // явно прописано
   top_products: topProducts,
-  products_sold: {},   
+  products_sold: {},
   bonus: 0
 };
 });
