@@ -102,12 +102,11 @@ const sellerStats = data.sellers.map(seller => {
 
     // Считаю выручку по чеку (с учётом скидки)
     const receiptRevenue = receipt.items.reduce((sum, item) => {
-  const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
-  const revenue = item.sale_price * item.quantity - discountAmount;
-  return +(sum + revenue).toFixed(2); // округляем после каждого суммирования
-}, 0);
-
-    totalRevenue += receiptRevenue;
+        const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
+        const revenue = item.sale_price * item.quantity - discountAmount;
+        return +(sum + revenue).toFixed(2); // округляем после каждого суммирования
+        }, 0);
+        totalRevenue = +(totalRevenue + receiptRevenue).toFixed(2);
 
     // Теперь считаю прибыль по каждому товару в чеке
     receipt.items.forEach(item => {
@@ -116,7 +115,7 @@ const sellerStats = data.sellers.map(seller => {
       if (product) {
         const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
         const itemProfit = +((item.sale_price - product.purchase_price) * item.quantity - discountAmount).toFixed(2);
-        totalProfit += itemProfit;
+        totalProfit = +(totalProfit + itemProfit).toFixed(2);
 
         // Считаю, сколько единиц этого товара продано
         if (!productQuantityMap[item.sku]) {
@@ -209,7 +208,7 @@ function calculateSimpleRevenue(purchase, _product) {
 
     sellerStats.forEach((seller, index) => {
     const totalSellers = sellerStats.length;
-    seller.bonus = calculateBonus(index, totalSellers, seller);
+    seller.bonus = +calculateBonusByProfit(index, totalSellers, seller).toFixed(2);
     seller.top_products = Object.entries(seller.products_sold)
         .map(([sku, quantity]) => ({ sku, quantity })) // преобразуем в массив объектов {sku, quantity}
         .sort((a, b) => b.quantity - a.quantity) // сортируем по убыванию количества проданных единиц
