@@ -177,10 +177,6 @@ const finalStats = rankedSellerStats.map(seller => ({
   )
 }));
 
-    // @TODO: Расчет выручки и прибыли для каждого продавца
-
-    
-
  /**
  * Функция для расчёта выручки с учётом скидки
  * @param purchase запись о покупке (элемент из record.items)
