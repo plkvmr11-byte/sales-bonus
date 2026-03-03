@@ -186,27 +186,7 @@ const finalStats = rankedSellerStats.map(seller => ({
 
     // @TODO: Расчет выручки и прибыли для каждого продавца
 
-    data.purchase_records.forEach(record => { // Чек 
-    const seller = sellerIndex[record.seller_id]; // Продавец
-    seller.sales_count += 1; // Увеличить количество продаж
-    seller.revenue += record.total_amount; // Увеличить общую сумму выручки всех продаж
-
-    // Расчёт прибыли для каждого товара
-    record.items.forEach(item => {
-        const product = productIndex[item.sku]; // Товар
-        const cost = product.purchase_price * item.quantity;
-        const revenue = calculateRevenue(item, product);
-        const profit = revenue - cost;
-        seller.profit += profit;
-
-        // Учёт количества проданных товаров
-        if (!seller.products_sold[item.sku]) {
-    seller.products_sold[item.sku] = 0;
-}
-
-        seller.products_sold[item.sku] += item.quantity;
-    });
-});
+   
 
  /**
  * Функция для расчёта выручки с учётом скидки
@@ -243,8 +223,8 @@ function calculateSimpleRevenue(purchase, _product) {
     // @TODO: Подготовка итоговой коллекции с нужными полями
     
 return sellerStats.map(seller => ({
-    seller_id: seller.id, // Строка, идентификатор продавца
-    name: `${seller.first_name} ${seller.last_name}`, // Строка, имя и фамилия продавца
+    seller_id: seller.seller_id,
+    name: seller.name,
     revenue: +seller.revenue.toFixed(2), // Число с двумя знаками после точки, выручка продавца
     profit: +seller.profit.toFixed(2), // Число с двумя знаками после точки, прибыль продавца
     sales_count: seller.sales_count, // Целое число, количество продаж продавца
