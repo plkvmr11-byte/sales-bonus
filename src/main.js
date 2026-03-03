@@ -143,8 +143,9 @@ const sellerStats = data.sellers.map(seller => {
 
   // Возвращаю готовую статистику по продавцу
   return {
-  seller_id: seller.id,
-  name: `${seller.first_name} ${seller.last_name}`,
+  seller_id: seller.id,       
+  first_name: seller.first_name,  
+  last_name: seller.last_name,    
   revenue: totalRevenue,
   profit: totalProfit,
   sales_count: sellerReceipts.length,
@@ -231,13 +232,20 @@ function calculateSimpleRevenue(purchase, _product) {
 
     // @TODO: Назначение премий на основе ранжирования
 
-    
+    sellerStats.forEach((seller, index) => {
+    const totalSellers = sellerStats.length;
+    seller.bonus = calculateBonus(index, totalSellers, seller);
+    seller.top_products = Object.entries(seller.products_sold)
+        .map(([sku, quantity]) => ({ sku, quantity })) // преобразуем в массив объектов {sku, quantity}
+        .sort((a, b) => b.quantity - a.quantity) // сортируем по убыванию количества проданных единиц
+        .slice(0, 10); // оставляем только первые 10 элементов — топ‑10
+});
 
     // @TODO: Подготовка итоговой коллекции с нужными полями
     
 return sellerStats.map(seller => ({
-    seller_id: seller.id, // Строка, идентификатор продавца
-    name: `${seller.first_name} ${seller.last_name}`, // Строка, имя и фамилия продавца
+    seller_id: seller.seller_id,          
+    name: `${seller.first_name} ${seller.last_name}`, 
     revenue: +seller.revenue.toFixed(2), // Число с двумя знаками после точки, выручка продавца
     profit: +seller.profit.toFixed(2), // Число с двумя знаками после точки, прибыль продавца
     sales_count: seller.sales_count, // Целое число, количество продаж продавца
