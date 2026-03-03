@@ -187,27 +187,7 @@ const finalStats = rankedSellerStats.map(seller => ({
 
     // @TODO: Расчет выручки и прибыли для каждого продавца
 
-    data.purchase_records.forEach(record => { // Чек 
-    const seller = sellerIndex[record.seller_id]; // Продавец
-    seller.sales_count += 1; // Увеличить количество продаж
-    seller.revenue += record.total_amount; // Увеличить общую сумму выручки всех продаж
-
-    // Расчёт прибыли для каждого товара
-    record.items.forEach(item => {
-        const product = productIndex[item.sku]; // Товар
-        const cost = product.purchase_price * item.quantity;
-        const revenue = calculateRevenue(item, product);
-        const profit = revenue - cost;
-        seller.profit += profit;
-
-        // Учёт количества проданных товаров
-        if (!seller.products_sold[item.sku]) {
-    seller.products_sold[item.sku] = 0;
-}
-
-        seller.products_sold[item.sku] += item.quantity;
-    });
-});
+    
 
  /**
  * Функция для расчёта выручки с учётом скидки
