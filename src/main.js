@@ -9,10 +9,9 @@ function calculateSimpleRevenue(purchase, _product) {
       // purchase — это одна из записей в поле items из чека в data.purchase_records
    // _product — это продукт из коллекции data.products
    const { discount, sale_price, quantity } = purchase;
-   const effectiveDiscount = discount / 100;
-   const revenue = sale_price * quantity;
-   const totalRevenue = revenue * (1 - effectiveDiscount);
-   return totalRevenue;
+   const discountCoefficient = 1 - (discount / 100);
+  const revenue = sale_price * quantity * discountCoefficient;
+  return Math.round(revenue * 100) / 100; // Округление до копеек
 }
 
 /**
@@ -62,7 +61,7 @@ function analyzeSalesData(data, options) {
     }
     const { calculateRevenue, calculateBonus } = options; 
 
-    if (!calculateRevenue || !calculateBonus) {
+    if (!calculateBonus) {
         throw new Error('Отсутствуют функции для расчета выручки или бонусов');
 
     }
@@ -102,11 +101,10 @@ const sellerStats = data.sellers.map(seller => {
 
     // Считаю выручку по чеку (с учётом скидки)
     const receiptRevenue = receipt.items.reduce((sum, item) => {
-        const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
-        const revenue = item.sale_price * item.quantity - discountAmount;
-        return sum + revenue; // округляем после каждого суммирования
-        }, 0);
-       totalRevenue += receiptRevenue; 
+  const itemRevenue = calculateRevenue(item, productIndex[item.sku]);
+  return sum + itemRevenue;
+}, 0);
+totalRevenue = Math.round((totalRevenue + receiptRevenue) * 100) / 100;
 
     // Теперь считаю прибыль по каждому товару в чеке
     receipt.items.forEach(item => {
