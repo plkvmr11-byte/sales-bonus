@@ -102,11 +102,10 @@ const sellerStats = data.sellers.map(seller => {
 
     // Считаю выручку по чеку (с учётом скидки)
     const receiptRevenue = receipt.items.reduce((sum, item) => {
-      const discountAmount =
-        (item.discount / 100) * item.sale_price * item.quantity;
-
-      return sum + (item.sale_price * item.quantity - discountAmount);
-    }, 0);
+  const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
+  const revenue = item.sale_price * item.quantity - discountAmount;
+  return +(sum + revenue).toFixed(2); // округляем после каждого суммирования
+}, 0);
 
     totalRevenue += receiptRevenue;
 
@@ -115,14 +114,8 @@ const sellerStats = data.sellers.map(seller => {
       const product = productIndex[item.sku];
 
       if (product) {
-        const discountAmount =
-          (item.discount / 100) * item.sale_price * item.quantity;
-
-        const itemProfit =
-          (item.sale_price - product.purchase_price) *
-          item.quantity -
-          discountAmount;
-
+        const discountAmount = (item.discount / 100) * item.sale_price * item.quantity;
+        const itemProfit = +((item.sale_price - product.purchase_price) * item.quantity - discountAmount).toFixed(2);
         totalProfit += itemProfit;
 
         // Считаю, сколько единиц этого товара продано
