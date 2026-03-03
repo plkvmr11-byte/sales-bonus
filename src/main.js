@@ -195,7 +195,7 @@ const finalStats = rankedSellerStats.map(seller => ({
     record.items.forEach(item => {
         const product = productIndex[item.sku]; // Товар
         const cost = product.purchase_price * item.quantity;
-        const revenue = calculateSimpleRevenue(item, product);
+        const revenue = calculateRevenue(item, product);
         const profit = revenue - cost;
         seller.profit += profit;
 
@@ -233,7 +233,7 @@ function calculateSimpleRevenue(purchase, _product) {
 
     sellerStats.forEach((seller, index) => {
     const totalSellers = sellerStats.length;
-    seller.bonus = calculateBonusByProfit(index, totalSellers);
+    seller.bonus = calculateBonus(index, totalSellers, seller);
     seller.top_products = Object.entries(seller.products_sold)
         .map(([sku, quantity]) => ({ sku, quantity })) // преобразуем в массив объектов {sku, quantity}
         .sort((a, b) => b.quantity - a.quantity) // сортируем по убыванию количества проданных единиц
